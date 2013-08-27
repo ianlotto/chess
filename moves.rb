@@ -11,3 +11,11 @@ def move_rules(coor)
      (players.position[1] + coor[1]).between?(0,7)
 
 end
+
+king
+[-1, 1]
+[0, 1]
+[1,1]
+[-1,0]
+[1,0]
+[-1,-1]

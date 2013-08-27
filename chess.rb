@@ -26,11 +26,15 @@ class ChessGame
 
       begin
         start_pos, end_pos = current_player.get_move
-        puts "#{start_pos} #{end_pos}"
+        #puts "#{start_pos} #{end_pos}"
+        #
+        board.valid_move?(start_pos, current_player)
       rescue RuntimeError => e
         puts "#{e.message}"
         retry
       end
+
+      board.move_piece(start_pos, end_pos)
 
       i = i == 0 ? 1 : 0 #switch turns
     end
@@ -82,11 +86,29 @@ class Board
     nil
   end
 
+  def move_piece(start, finish)
+    piece = grid[start[1]][start[0]]
+    grid[start[1]][start[0]] = nil
+
+    piece.position = finish
+    grid[finish[1]][finish[0]] = piece
+  end
+
+  def valid_move?(start, player)
+    piece = grid[start[1]][start[0]]
+
+    unless piece && piece.player == player.num
+      raise RuntimeError.new "Invalid move - You can't move from that space."
+    end
+  end
+
   private
 
   def render_row_numbers(row)
     print " #{row+1} "
   end
+
+
 
   def render_col_letters
     print "   "
@@ -151,6 +173,8 @@ class Player
     end
   end
 
+
+
   private
 
   def quit
@@ -187,3 +211,6 @@ class Player
     nil
   end
 end
+
+c = ChessGame.new
+c.play
