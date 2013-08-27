@@ -1,8 +1,9 @@
 require './piece.rb'
 
 class ChessGame
+  attr_reader :players
   def initialize
-    @board = Board.new
+    @board = Board.new(self)
     @players = [Player.new(1), Player.new(2)]
 
   end
@@ -12,8 +13,10 @@ class ChessGame
 end
 
 class Board
-  attr_accessor :grid
-  def initialize
+  attr_accessor :game, :grid
+
+  def initialize(game)
+    @game = game
     generate_board
   end
 
@@ -28,20 +31,43 @@ class Board
   end
 
   def place_pieces
-    #assign pieces to tiles
+
+    game.players.each do |player|
+      pos = player.num == 1 ? [0,0] : [0,7]
+
+      player.pieces.each do |piece|
+        col, row = pos
+        #assign pieces to tiles
+        self.grid[row][col].occupier = piece
+        piece.position = pos
+
+        if col < 8
+          pos.last += 1
+        else
+          col = 0
+          player.num == 1 ? row += 1 : row -= 1
+        end
+
+      end
+
+    end
+
+    nil
   end
 
 end
 
 class Tile
+  attr_accessor :occupier
+
   def initialize(board, position)
     @board, @position = board, position
-    @occupied = false
     @occupier = nil
+    @occupied = false
   end
 
   def occupied?
-    @occupied
+    if @occupier
   end
 
   def occupied_by
@@ -66,7 +92,7 @@ class Player
   private
 
   def create_pieces
-    8.times {self.pieces << Pawn.new(num) }
+
     self.pieces << Rook.new(num)
     self.pieces << Knight.new(num)
     self.pieces << Bishop.new(num)
@@ -75,6 +101,8 @@ class Player
     self.pieces << Bishop.new(num)
     self.pieces << Knight.new(num)
     self.pieces << Rook.new(num)
+
+    8.times {self.pieces << Pawn.new(num) }
 
     nil
   end
