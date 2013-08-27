@@ -3,6 +3,10 @@ require "colorize"
 
 class ChessGame
   attr_accessor :players, :board
+
+  LETTER_MAP = {"a"=>0, "b"=>1, "c"=>2, "d"=>3,
+                "e"=>4, "f"=>5, "g"=>6, "h"=>7}
+
   def initialize
     @players = [Player.new(1), Player.new(2)]
     @board = Board.new(self)
@@ -12,6 +16,28 @@ class ChessGame
 
   def move_pieces
   end
+
+  def play
+    i = 0
+    loop do
+      current_player = players[i]
+
+      board.render
+
+      begin
+        start_pos, end_pos = current_player.get_move
+        puts "#{start_pos} #{end_pos}"
+      rescue RuntimeError => e
+        puts "#{e.message}"
+        retry
+      end
+
+      i = i == 0 ? 1 : 0 #switch turns
+    end
+  end
+
+  private
+
 end
 
 class Board
@@ -25,7 +51,11 @@ class Board
   def render
     tile_color = :yellow
 
+    render_col_letters
+
     (0..7).to_a.reverse.each do |row|
+      render_row_numbers(row)
+
       grid[row].each do |tile|
 
         if tile
@@ -41,14 +71,28 @@ class Board
 
         tile_color = tile_color == :cyan ? :yellow : :cyan
       end
+      render_row_numbers(row)
       puts ""
-      tile_color = tile_color == :cyan ? :yellow : :cyan
+
+      tile_color = tile_color == :cyan ? :yellow : :cyan #switch tile color for next row
     end
+
+    render_col_letters
 
     nil
   end
 
   private
+
+  def render_row_numbers(row)
+    print " #{row+1} "
+  end
+
+  def render_col_letters
+    print "   "
+    8.times { |i| print " #{ChessGame::LETTER_MAP.key(i).upcase} " }
+    puts ""
+  end
 
   def generate_board
     self.grid = Array.new(8) do |row|
@@ -82,25 +126,6 @@ class Board
 
 end
 
-# class Tile
-#   attr_accessor :occupier
-#
-#   def initialize(board, position)
-#     @board, @position = board, position
-#     @occupier = nil
-#     @occupied = false
-#   end
-#
-#   def occupied?
-#     #if @occupier
-#   end
-#
-#   def occupied_by
-#     @occupier
-#   end
-#
-# end
-
 
 class Player
   attr_accessor :pieces
@@ -113,7 +138,38 @@ class Player
     create_pieces
   end
 
+  def get_move
+    puts "Player #{self.num}, where do you wish to move? (q to quit)"
+    move = gets.chomp.downcase.split(" ")
+
+    quit if move[0] == 'q'
+
+    if move.length != 2
+      raise RuntimeError.new "Invalid input - Please separate coords with a space"
+    else
+      move.map { |pos| map_position(pos) }
+    end
+  end
+
   private
+
+  def quit
+    puts "Thanks for playing"
+    exit
+  end
+
+  def map_position(position)
+    #will take in a [letter][number] String and return and coordinate pair
+
+
+    col, row = position.split("")
+
+    unless ChessGame::LETTER_MAP[col] && row.to_i.between?(1,8)
+      raise RuntimeError.new "Invalid Input - Please use A-H and 1-8"
+    end
+
+    [ChessGame::LETTER_MAP[col], (row.to_i)-1]
+  end
 
   def create_pieces
 
