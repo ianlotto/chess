@@ -1,14 +1,16 @@
 require './piece.rb'
+require "colorize"
 
 class ChessGame
-  attr_reader :players
+  attr_accessor :players, :board
   def initialize
-    @board = Board.new(self)
     @players = [Player.new(1), Player.new(2)]
+    @board = Board.new(self)
 
+    @turn = 1 #starts with player 1
   end
 
-  def play
+  def move_pieces
   end
 end
 
@@ -20,11 +22,20 @@ class Board
     generate_board
   end
 
+  def render
+    (0..7).to_a.reverse.each do |row|
+      grid[row].each do |tile|
+        puts tile
+      end
+    end
+    nil
+  end
+
   private
 
   def generate_board
     self.grid = Array.new(8) do |row|
-      Array.new(8) { |col| Tile. new(self, [row, col])}
+      Array.new(8) { |col| Tile. new(self, [col, row])}
     end
 
     place_pieces
@@ -35,17 +46,18 @@ class Board
     game.players.each do |player|
       pos = player.num == 1 ? [0,0] : [0,7]
 
+
       player.pieces.each do |piece|
         col, row = pos
-        #assign pieces to tiles
-        self.grid[row][col].occupier = piece
-        piece.position = pos
 
-        if col < 8
-          pos.last += 1
+        self.grid[row][col].occupier = piece #assign pieces to tiles
+        piece.position = [col, row] # set position attribute of each piece
+
+        if col < 7
+          pos[0] += 1
         else
-          col = 0
-          player.num == 1 ? row += 1 : row -= 1
+          pos[0] = 0
+          player.num == 1 ? pos[-1] += 1 : pos[-1] -= 1
         end
 
       end
@@ -67,7 +79,7 @@ class Tile
   end
 
   def occupied?
-    if @occupier
+    #if @occupier
   end
 
   def occupied_by
