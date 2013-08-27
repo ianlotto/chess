@@ -1,6 +1,6 @@
 class Piece
   attr_reader :player
-  attr_accessor :position
+  attr_accessor :position, :symbol
 
   def initialize(player)
     @player = player
@@ -16,6 +16,7 @@ end
 class Pawn < Piece
   def initialize(player)
     super(player)
+    @symbol = "p"
   end
 
   def move
@@ -26,6 +27,7 @@ end
 class Rook < Piece
   def initialize(player)
     super(player)
+    @symbol = "R"
   end
 
   def move
@@ -36,6 +38,7 @@ end
 class Knight < Piece
   def initialize(player)
     super(player)
+    @symbol = "N"
   end
 
   def move
@@ -46,6 +49,7 @@ end
 class Bishop < Piece
   def initialize(player)
     super(player)
+    @symbol = "B"
   end
 
   def move
@@ -56,6 +60,7 @@ end
 class King < Piece
   def initialize(player)
     super(player)
+    @symbol = "K"
   end
 
   def move
@@ -66,6 +71,7 @@ end
 class Queen < Piece
   def initialize(player)
     super(player)
+    @symbol = "Q"
   end
 
   def move

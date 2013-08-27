@@ -23,11 +23,28 @@ class Board
   end
 
   def render
+    tile_color = :yellow
+
     (0..7).to_a.reverse.each do |row|
       grid[row].each do |tile|
-        puts tile
+
+        if tile
+          symbol = tile.symbol
+          symbol_color = tile.player == 1 ? :white : :black
+        else
+          symbol = " "
+          symbol_color = :white
+        end
+
+        print " #{symbol} ".colorize(:color => symbol_color,
+                                     :background => tile_color)
+
+        tile_color = tile_color == :cyan ? :yellow : :cyan
       end
+      puts ""
+      tile_color = tile_color == :cyan ? :yellow : :cyan
     end
+
     nil
   end
 
@@ -35,22 +52,20 @@ class Board
 
   def generate_board
     self.grid = Array.new(8) do |row|
-      Array.new(8) { |col| Tile. new(self, [col, row])}
+      Array.new(8)
     end
 
     place_pieces
   end
 
   def place_pieces
-
     game.players.each do |player|
       pos = player.num == 1 ? [0,0] : [0,7]
-
 
       player.pieces.each do |piece|
         col, row = pos
 
-        self.grid[row][col].occupier = piece #assign pieces to tiles
+        self.grid[row][col] = piece #assign pieces to positions on board
         piece.position = [col, row] # set position attribute of each piece
 
         if col < 7
@@ -59,9 +74,7 @@ class Board
           pos[0] = 0
           player.num == 1 ? pos[-1] += 1 : pos[-1] -= 1
         end
-
       end
-
     end
 
     nil
@@ -69,25 +82,24 @@ class Board
 
 end
 
-class Tile
-  attr_accessor :occupier
-
-  def initialize(board, position)
-    @board, @position = board, position
-    @occupier = nil
-    @occupied = false
-  end
-
-  def occupied?
-    #if @occupier
-  end
-
-  def occupied_by
-    @occupier
-  end
-
-end
-
+# class Tile
+#   attr_accessor :occupier
+#
+#   def initialize(board, position)
+#     @board, @position = board, position
+#     @occupier = nil
+#     @occupied = false
+#   end
+#
+#   def occupied?
+#     #if @occupier
+#   end
+#
+#   def occupied_by
+#     @occupier
+#   end
+#
+# end
 
 
 class Player
@@ -119,7 +131,3 @@ class Player
     nil
   end
 end
-
-# class Hu
-#
-# class Knight < Piece
