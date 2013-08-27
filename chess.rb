@@ -1,3 +1,5 @@
+require './piece.rb'
+
 class ChessGame
   def initialize
     @board = Board.new
@@ -25,6 +27,9 @@ class Board
     place_pieces
   end
 
+  def place_pieces
+    #assign pieces to tiles
+  end
 
 end
 
@@ -45,10 +50,12 @@ class Tile
 
 end
 
-class Piece
-end
+
 
 class Player
+  attr_accessor :pieces
+  attr_reader :num
+
   def initialize(num)
     @num = num
     @pieces = [] #an array containing all of the initial pieces
@@ -59,6 +66,17 @@ class Player
   private
 
   def create_pieces
+    8.times {self.pieces << Pawn.new(num) }
+    self.pieces << Rook.new(num)
+    self.pieces << Knight.new(num)
+    self.pieces << Bishop.new(num)
+    self.pieces << Queen.new(num)
+    self.pieces << King.new(num)
+    self.pieces << Bishop.new(num)
+    self.pieces << Knight.new(num)
+    self.pieces << Rook.new(num)
+
+    nil
   end
 end
 
