@@ -1,5 +1,6 @@
 require "colorize"
 
+require './utilities.rb'
 require './piece.rb'
 require './board.rb'
 require './player.rb'
@@ -7,6 +8,8 @@ require './player.rb'
 
 class ChessGame
   attr_accessor :players, :board
+
+  include Utilities
 
   LETTER_MAP = {"a"=>0, "b"=>1, "c"=>2, "d"=>3,
                 "e"=>4, "f"=>5, "g"=>6, "h"=>7}
@@ -36,8 +39,8 @@ class ChessGame
         board.valid_move?(start_pos, current_player)
 
         #gets piece
-        target_piece = board.to_grid(start_pos)
-        #target_piece.valid_move?(start_pos, end_pos)
+        target_piece = to_grid(board.grid, start_pos)
+        target_piece.valid_move?(board.grid, start_pos, end_pos)
 
       rescue RuntimeError => e
         puts "#{e.message}"
@@ -47,6 +50,7 @@ class ChessGame
       board.move_piece(start_pos, end_pos)
 
       i = i == 0 ? 1 : 0 #switch turns
+      @turn += 1
     end
   end
 
