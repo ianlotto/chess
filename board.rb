@@ -50,9 +50,9 @@ class Board
   end
 
   def valid_move?(start, player)
-    piece = grid[start[1]][start[0]]
+    piece = self[start]
 
-    unless piece && piece.player == player.num
+    unless piece && piece.player == player
       raise RuntimeError.new "Invalid move - You can't move from that space."
     end
   end
@@ -91,20 +91,22 @@ class Board
     piece.position = finish
 
     #only remove the captured piece if we're working on the actual grid
-    captured = remove_captured_piece(self[finish]) if self.occupied?(finish)
+    captured_piece = remove_captured_piece(self[finish]) if self.occupied?(finish)
 
     candidate_board.grid[finish[1]][finish[0]] = piece #finish position now contains the new piece
 
     # consider refactoring
     #if move puts the current player in check, we need to revert the move
     if self.is_virtual?(candidate_board)
-      if game.players[piece.player-1].in_check?(candidate_board, game.players[piece.player-2])
-        restore_captured_piece(piece) if captured
+      if piece.player.in_check?(candidate_board, game.players[piece.player.num-2])
+
+        restore_captured_piece(captured_piece) if captured_piece
         piece.position = original_position
         raise RuntimeError.new "Invalid move - Your king would be in check!"
       else
+
         piece.position = original_position
-        restore_captured_piece(piece) if captured
+        restore_captured_piece(captured_piece) if captured_piece
 
         return true
       end
@@ -115,14 +117,14 @@ class Board
   #delete piece from other player's pieces array
   #Think about moving this to Player class.
   def remove_captured_piece(piece)
-    game.players[piece.player-1].captured_pieces << game.players[piece.player-1].pieces.delete(piece)
+    captured_piece = piece.player.pieces.delete(piece)
+    piece.player.captured_pieces << captured_piece
 
-    true
+    captured_piece
   end
 
   def restore_captured_piece(piece)
-    popped = game.players[piece.player-2].captured_pieces.pop
-    game.players[piece.player-2].pieces << popped
+    piece.player.pieces << piece.player.captured_pieces.pop
 
     nil
   end

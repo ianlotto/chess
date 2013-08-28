@@ -28,6 +28,7 @@ class ChessGame
 
       if current_player.in_check?(board, waiting_player)
         break if current_player.checkmate?(board)
+
         puts "Player #{current_player.num}, you're in check!"
       end
 

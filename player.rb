@@ -89,16 +89,16 @@ class Player
 
   def create_pieces
 
-    self.pieces << Rook.new(num)
-    self.pieces << Knight.new(num)
-    self.pieces << Bishop.new(num)
-    self.pieces << Queen.new(num)
-    self.pieces << King.new(num)
-    self.pieces << Bishop.new(num)
-    self.pieces << Knight.new(num)
-    self.pieces << Rook.new(num)
+    self.pieces << Rook.new(self)
+    self.pieces << Knight.new(self)
+    self.pieces << Bishop.new(self)
+    self.pieces << Queen.new(self)
+    self.pieces << King.new(self)
+    self.pieces << Bishop.new(self)
+    self.pieces << Knight.new(self)
+    self.pieces << Rook.new(self)
 
-    8.times {self.pieces << Pawn.new(num) }
+    8.times {self.pieces << Pawn.new(self) }
 
     nil
   end
