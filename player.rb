@@ -1,11 +1,11 @@
 class Player
-  attr_accessor :pieces
+  attr_accessor :pieces, :captured_pieces
   attr_reader :num
 
   def initialize(num)
     @num = num
     @pieces = [] #an array containing all of the initial pieces
-
+    @captured_pieces = [] #an array holding all that player's OWN captured pieces
     create_pieces
   end
 
@@ -23,8 +23,10 @@ class Player
   end
 
   def get_all_moves(board)
+
     all_moves = []
     pieces.each do |piece|
+
       all_moves += piece.moves(board, piece.position)
     end
 

@@ -78,45 +78,56 @@ class Board
 
   #updates values of the grid array
   #works on both the actual grid and virtual grids
-  def move_piece(candidate_grid, start, finish)
+  def move_piece(candidate_board, start, finish)
 
-    piece = candidate_grid[start[1]][start[0]]
+    piece = candidate_board.grid[start[1]][start[0]]
     #store the piece's position attribute
     original_position = piece.position
 
-    candidate_grid[start[1]][start[0]] = nil #start position is now empty
+    candidate_board.grid[start[1]][start[0]] = nil #start position is now empty
 
     #update position attribute of piece
     #for both virtual and actual grids
     piece.position = finish
 
     #only remove the captured piece if we're working on the actual grid
-    remove_captured_piece(self[finish]) if self.occupied?(finish) && !self.is_virtual?(candidate_grid)
+    captured = remove_captured_piece(self[finish]) if self.occupied?(finish)
 
-    candidate_grid[finish[1]][finish[0]] = piece #finish position now contains the new piece
+    candidate_board.grid[finish[1]][finish[0]] = piece #finish position now contains the new piece
 
     # consider refactoring
     #if move puts the current player in check, we need to revert the move
-    if self.is_virtual?(candidate_grid)
-      if game.players[piece.player-1].in_check?(self, game.players[piece.player-2])
+    if self.is_virtual?(candidate_board)
+      if game.players[piece.player-1].in_check?(candidate_board, game.players[piece.player-2])
+        restore_captured_piece(piece) if captured
         piece.position = original_position
         raise RuntimeError.new "Invalid move - Your king would be in check!"
       else
         piece.position = original_position
+        restore_captured_piece(piece) if captured
       end
     end
 
   end
 
   #delete piece from other player's pieces array
+  #Think about moving this to Player class.
   def remove_captured_piece(piece)
-    game.players[piece.player-1].pieces.delete(piece)
+    game.players[piece.player-1].captured_pieces << game.players[piece.player-1].pieces.delete(piece)
+
+    true
+  end
+
+  def restore_captured_piece(piece)
+    popped = game.players[piece.player-2].captured_pieces.pop
+    game.players[piece.player-2].pieces << popped
+
+    nil
   end
 
   def is_virtual?(candidate)
-    candidate.object_id != grid.object_id
+    candidate.object_id != self.object_id
   end
-
 
   private
 

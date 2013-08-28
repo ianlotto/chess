@@ -37,15 +37,17 @@ class ChessGame
         target_piece = board[start_pos] #get piece using custom [] method
         target_piece.valid_move?(board, start_pos, end_pos) #make sure the move is valid on a piece level
 
-        virtual_grid = board.grid.deep_dup
-        board.move_piece(virtual_grid, start_pos, end_pos)
+        virtual_board = board.dup
+        virtual_board.grid = virtual_board.grid.deep_dup
+
+        board.move_piece(virtual_board, start_pos, end_pos)
 
       rescue RuntimeError => e
         puts "#{e.message}"
         retry
       end
 
-      board.move_piece(board.grid, start_pos, end_pos) #actual updating of board's grid array
+      board.move_piece(board, start_pos, end_pos) #actual updating of board's grid array
 
       i = i == 0 ? 1 : 0 #switch turns
       @turn += 1
