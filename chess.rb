@@ -36,8 +36,8 @@ class ChessGame
               
         board.valid_move?(start_pos, current_player) #check board for existence of player's piece
 
-        target_piece = to_grid(board.grid, start_pos) #get piece
-        target_piece.valid_move?(board.grid, start_pos, end_pos) #make sure the move is valid on a piece level
+        target_piece = board[start_pos] #get piece using custom [] method
+        target_piece.valid_move?(board, start_pos, end_pos) #make sure the move is valid on a piece level
 
       rescue RuntimeError => e
         puts "#{e.message}"

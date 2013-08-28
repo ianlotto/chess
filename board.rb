@@ -43,6 +43,15 @@ class Board
       raise RuntimeError.new "Invalid move - You can't move from that space."
     end
   end
+  
+  def occupied?(pos)
+    self[pos].is_a? Piece
+  end
+  
+  #converts [x,y] input to 2d grid array position
+  def [](pos) 
+    self.grid[pos[1]][pos[0]]
+  end
 
   #updates values of the grid array
   def move_piece(start, finish)
@@ -68,10 +77,8 @@ class Board
 
   #builds the container grid
   def generate_board
-    self.grid = Array.new(8) do |row|
-      Array.new(8)
-    end
-
+    self.grid = Array.new(8) { |row| Array.new(8) }
+    
     place_pieces
   end
   
