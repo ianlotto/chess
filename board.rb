@@ -31,7 +31,7 @@ class Board
 
         if tile #occupied?
           symbol = tile.symbol
-          symbol_color = tile.player == 1 ? :white : :black
+          symbol_color = tile.player.num == 1 ? :white : :black
         else #empty
           symbol = " "
           symbol_color = :white
@@ -80,20 +80,20 @@ class Board
   #works on both the actual grid and virtual grids
   def move_piece(candidate_board, start, finish)
 
-    piece = candidate_board.grid[start[1]][start[0]]
+    piece = candidate_board[start]
     #store the piece's position attribute
     original_position = piece.position
 
-    candidate_board.grid[start[1]][start[0]] = nil #start position is now empty
+    candidate_board[start] = nil #start position is now empty
 
     #update position attribute of piece
     #for both virtual and actual grids
     piece.position = finish
 
     #only remove the captured piece if we're working on the actual grid
-    captured_piece = remove_captured_piece(self[finish]) if self.occupied?(finish)
+    captured_piece = remove_captured_piece(candidate_board[finish]) if candidate_board.occupied?(finish)
 
-    candidate_board.grid[finish[1]][finish[0]] = piece #finish position now contains the new piece
+    candidate_board[finish] = piece #finish position now contains the new piece
 
     # consider refactoring
     #if move puts the current player in check, we need to revert the move
@@ -112,6 +112,13 @@ class Board
       end
     end
 
+  end
+
+  def dup_board
+    virtual_board = self.dup
+    virtual_board.grid = virtual_board.grid.deep_dup
+
+    virtual_board
   end
 
   #delete piece from other player's pieces array

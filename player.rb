@@ -47,24 +47,21 @@ class Player
   end
 
   def checkmate?(board)
+
     get_all_moves(board).each do |start_pos, moves|
-
       moves.each do |end_pos|
-
-        virtual_board = board.dup
-        virtual_board.grid = virtual_board.grid.deep_dup
-
+        virtual_board = board.dup_board
         #we don't want check error to bubble up here
         #just keep going and check the next case
         begin
           #we have a potential move here!
           return false if board.move_piece(virtual_board, start_pos, end_pos)
-        ensure
+        rescue
           next
         end
       end
-
     end
+    #no such luck, this player loses!
     true
   end
 

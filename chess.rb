@@ -43,8 +43,7 @@ class ChessGame
         target_piece = board[start_pos] #get piece using custom [] method
         target_piece.valid_move?(board, start_pos, end_pos) #make sure the move is valid on a piece level
 
-        virtual_board = board.dup
-        virtual_board.grid = virtual_board.grid.deep_dup
+        virtual_board = board.dup_board
 
         board.move_piece(virtual_board, start_pos, end_pos)
 
