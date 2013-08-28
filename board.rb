@@ -48,6 +48,10 @@ class Board
     self[pos].is_a? Piece
   end
   
+  def empty?(pos)
+    self[pos].nil?
+  end
+  
   #converts [x,y] input to 2d grid array position
   def [](pos) 
     self.grid[pos[1]][pos[0]]
@@ -59,7 +63,15 @@ class Board
     grid[start[1]][start[0]] = nil #start position is now empty
 
     piece.position = finish #update position attribute of piece
+    
+    remove_captured_piece(self[finish]) if self.occupied?(finish)
+    
     grid[finish[1]][finish[0]] = piece #finish position now contains the new piece
+  end
+  
+  #delete piece from other player's pieces array
+  def remove_captured_piece(piece)
+    game.players[piece.player-1].pieces.delete(piece)
   end
 
 
