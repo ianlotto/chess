@@ -1,19 +1,11 @@
-require_relative 'piece'
+require_relative 'royalty'
 require_relative "move_rules"
 
-class Queen < Piece
-  include MoveRules
+class Queen < Royalty
 
   def initialize(player)
     super(player)
     @symbol = "Q"
-  end
-
-  def moves(board, start_pos)
-    moves = directions(board, start_pos, DIAGONALS)
-    moves += directions(board, start_pos, ORTHOGONALS)
-
-    moves
   end
 
 end
