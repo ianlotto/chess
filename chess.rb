@@ -37,12 +37,8 @@ class ChessGame
         target_piece = board[start_pos] #get piece using custom [] method
         target_piece.valid_move?(board, start_pos, end_pos) #make sure the move is valid on a piece level
 
-        virtual_board = board.grid.deep_dup
-        board.move_piece(virtual_board, start_pos, end_pos)
-
-        #getting all the moves of opposing player
-        waiting_player.get_all_moves
-        #we want to check the pos of our king to see if it's in one of those moves.
+        virtual_grid = board.grid.deep_dup
+        board.move_piece(virtual_grid, start_pos, end_pos)
 
       rescue RuntimeError => e
         puts "#{e.message}"

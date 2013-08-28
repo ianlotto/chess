@@ -98,7 +98,7 @@ class Board
     # consider refactoring
     #if move puts the current player in check, we need to revert the move
     if self.is_virtual?(candidate_grid)
-      if game.players[piece.player-1].in_check?
+      if game.players[piece.player-1].in_check?(self, game.players[piece.player-2])
         piece.position = original_position
         raise RuntimeError.new "Invalid move - Your king would be in check!"
       else
