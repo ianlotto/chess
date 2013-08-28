@@ -17,13 +17,13 @@ class Pawn < Piece
     moves << [x, y+(valid_dir*2)] if start_row == y && (board.empty?([x, y+valid_dir]) && board.empty?([x, y+(valid_dir*2)]))
     
     #move forward 1 space
-    moves << [x, y+valid_dir] if board.empty?([x, y+valid_dir]) 
+    moves << [x, y+valid_dir] if on_board?([x, y+valid_dir]) && board.empty?([x, y+valid_dir]) 
 
     #diagonal attack
     moves << [x-1, y+valid_dir] if enemy?(board[[x-1, y+valid_dir]]) #board[] method makes this syntax weird
     moves << [x+1, y+valid_dir] if enemy?(board[[x+1, y+valid_dir]]) #perhaps move method to board class
     
-    moves.select { |move| on_board?(move) } #on_board defined in Piece Class
+    moves
   end
   
   def valid_move?(board, start_pos, end_pos)

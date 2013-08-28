@@ -20,11 +20,10 @@ class Knight < Piece
     KNIGHT_OFFSETS.each do |offset|
       end_x, end_y = offset
       
-      moves << [x+end_x,y+end_y]
+      moves << [x+end_x,y+end_y] if on_board?([x+end_x,y+end_y]) && (board.empty?([x+end_x,y+end_y]) || enemy?(board[[x+end_x,y+end_y]]))
     end
     
-    p moves.select { |move| on_board?(move) }
-    moves.select { |move| on_board?(move) } #on_board defined in Piece Class
+    moves
   end
   
   def valid_move?(board, start_pos, end_pos)

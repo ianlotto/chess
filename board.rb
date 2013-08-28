@@ -48,12 +48,14 @@ class Board
     self[pos].is_a? Piece
   end
   
+  #will still return true if called on a position off the grid
+  #that should be OK
   def empty?(pos)
     self[pos].nil?
   end
   
   #converts [x,y] input to 2d grid array position
-  def [](pos) 
+  def [](pos)
     self.grid[pos[1]][pos[0]]
   end
 
