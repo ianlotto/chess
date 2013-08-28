@@ -25,13 +25,4 @@ class Pawn < Piece
     
     moves
   end
-  
-  def valid_move?(board, start_pos, end_pos)
-    if self.moves(board, start_pos).include?(end_pos)
-      return true
-    else       
-      raise RuntimeError.new "Invalid move - Your pawn can't move there."
-    end
-  end
-
 end

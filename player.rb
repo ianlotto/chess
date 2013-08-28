@@ -30,14 +30,13 @@ class Player
     puts "Thanks for playing!"
     exit
   end
-
+  
+  #will take in a [letter][number] String and return and coordinate pair
   def map_position(position)
-    #will take in a [letter][number] String and return and coordinate pair
+     coords = position.split("")
+     col, row = coords
 
-
-    col, row = position.split("")
-
-    unless ChessGame::LETTER_MAP[col] && row.to_i.between?(1,8)
+    unless coords.length == 2 && ChessGame::LETTER_MAP[col] && row.to_i.between?(1,8) 
       raise RuntimeError.new "Invalid Input - Please use A-H and 1-8"
     end
 
