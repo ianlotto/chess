@@ -1,10 +1,9 @@
 require "colorize"
 
 require './utilities.rb'
-require './piece.rb'
+require './pieces.rb'
 require './board.rb'
 require './player.rb'
-
 
 class ChessGame
   attr_accessor :players, :board
@@ -18,44 +17,40 @@ class ChessGame
     @players = [Player.new(1), Player.new(2)]
     @board = Board.new(self)
 
-    @turn = 1 #starts with player 1
-  end
-
-  def move_pieces
+    @turn = 1
   end
 
   def play
-    i = 0
+    i = 0 #toggles between the players array
+    
     loop do
       current_player = players[i]
 
       board.render
 
-      begin
-        #gets player's input
-        start_pos, end_pos = current_player.get_move
+      begin 
+        #all of these methods will raise an error if the 
+        #specified move is invalid for whatever reason
+         
+        start_pos, end_pos = current_player.get_move #get player's input, checks that it's on the board
+              
+        board.valid_move?(start_pos, current_player) #check board for existence of player's piece
 
-        #checks board for piece existence there
-        board.valid_move?(start_pos, current_player)
-
-        #gets piece
-        target_piece = to_grid(board.grid, start_pos)
-        target_piece.valid_move?(board.grid, start_pos, end_pos)
+        target_piece = to_grid(board.grid, start_pos) #get piece
+        target_piece.valid_move?(board.grid, start_pos, end_pos) #make sure the move is valid on a piece level
 
       rescue RuntimeError => e
         puts "#{e.message}"
         retry
       end
 
-      board.move_piece(start_pos, end_pos)
+      board.move_piece(start_pos, end_pos) #actual updating of board's grid array
 
       i = i == 0 ? 1 : 0 #switch turns
       @turn += 1
     end
   end
-
-  private
-
+  
 end
 
 c = ChessGame.new

@@ -27,7 +27,7 @@ class Player
   private
 
   def quit
-    puts "Thanks for playing"
+    puts "Thanks for playing!"
     exit
   end
 
