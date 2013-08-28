@@ -26,6 +26,11 @@ class ChessGame
 
       board.render
 
+      if current_player.in_check?(board, waiting_player)
+        break if current_player.checkmate?(board)
+        puts "Player #{current_player.num}, you're in check!"
+      end
+
       begin
         #all of these methods will raise an error if the
         #specified move is invalid for whatever reason
@@ -52,6 +57,8 @@ class ChessGame
       i = i == 0 ? 1 : 0 #switch turns
       @turn += 1
     end
+
+    puts "Player #{players[i].num}, you have been mated!!"
   end
 
 end

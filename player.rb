@@ -24,23 +24,48 @@ class Player
 
   def get_all_moves(board)
 
-    all_moves = []
+    all_moves = {}
     pieces.each do |piece|
-
-      all_moves += piece.moves(board, piece.position)
+      all_moves[piece.position] = piece.moves(board, piece.position)
     end
 
     #p all_moves
     all_moves
   end
 
+  def get_all_destinations(board)
+    get_all_moves(board).values.flatten(1)
+  end
+
   def in_check?(board, player)
-    player.get_all_moves(board).include?(kings_coordinates)
+    player.get_all_destinations(board).include?(kings_coordinates)
   end
 
   def kings_coordinates
     king = pieces.select { |p| p.class == King }
     king[0].position
+  end
+
+  def checkmate?(board)
+    get_all_moves(board).each do |start_pos, moves|
+
+      moves.each do |end_pos|
+
+        virtual_board = board.dup
+        virtual_board.grid = virtual_board.grid.deep_dup
+
+        #we don't want check error to bubble up here
+        #just keep going and check the next case
+        begin
+          #we have a potential move here!
+          return false if board.move_piece(virtual_board, start_pos, end_pos)
+        ensure
+          next
+        end
+      end
+
+    end
+    true
   end
 
   private

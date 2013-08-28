@@ -105,6 +105,8 @@ class Board
       else
         piece.position = original_position
         restore_captured_piece(piece) if captured
+
+        return true
       end
     end
 
