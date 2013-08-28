@@ -13,13 +13,13 @@ module MoveRules
 
       while on_board?(current_pos) && (board.empty?(current_pos) || enemy?(board[current_pos]))
         moves << current_pos
+        break if self.class == King #king does not iterate
         break if enemy?(board[current_pos])
         current_pos = [ current_pos[0] + direction[0], current_pos[1] + direction[1] ]
       end
     end
 
     moves
-
   end
 
 end
