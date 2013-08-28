@@ -10,7 +10,7 @@ class Player
   end
 
   def get_move
-    puts "Player #{self.num}, where do you wish to move? (q to quit)"
+    puts "Player #{self.num}, where do you wish to move? ('q' to quit)"
     move = gets.chomp.downcase.split(" ")
 
     quit if move[0] == 'q'
@@ -30,13 +30,13 @@ class Player
     puts "Thanks for playing!"
     exit
   end
-  
+
   #will take in a [letter][number] String and return and coordinate pair
   def map_position(position)
      coords = position.split("")
      col, row = coords
 
-    unless coords.length == 2 && ChessGame::LETTER_MAP[col] && row.to_i.between?(1,8) 
+    unless coords.length == 2 && ChessGame::LETTER_MAP[col] && row.to_i.between?(1,8)
       raise RuntimeError.new "Invalid Input - Please use A-H and 1-8"
     end
 

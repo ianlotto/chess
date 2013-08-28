@@ -1,6 +1,5 @@
 require "colorize"
 
-require './utilities.rb'
 require './pieces.rb'
 require './board.rb'
 require './player.rb'
@@ -20,18 +19,18 @@ class ChessGame
 
   def play
     i = 0 #toggles between the players array
-    
+
     loop do
       current_player = players[i]
 
       board.render
 
-      begin 
-        #all of these methods will raise an error if the 
+      begin
+        #all of these methods will raise an error if the
         #specified move is invalid for whatever reason
-         
+
         start_pos, end_pos = current_player.get_move #get player's input, checks that it's on the board
-              
+
         board.valid_move?(start_pos, current_player) #check board for existence of player's piece
 
         target_piece = board[start_pos] #get piece using custom [] method
@@ -48,7 +47,7 @@ class ChessGame
       @turn += 1
     end
   end
-  
+
 end
 
 c = ChessGame.new
