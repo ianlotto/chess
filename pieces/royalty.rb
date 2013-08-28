@@ -8,6 +8,7 @@ class Royalty < Piece
     moves = directions(board, start_pos, DIAGONALS)
     moves += directions(board, start_pos, ORTHOGONALS)
 
+
     moves
   end
 

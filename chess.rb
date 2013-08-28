@@ -22,6 +22,7 @@ class ChessGame
 
     loop do
       current_player = players[i]
+      waiting_player = players[i-1]
 
       board.render
 
@@ -36,12 +37,19 @@ class ChessGame
         target_piece = board[start_pos] #get piece using custom [] method
         target_piece.valid_move?(board, start_pos, end_pos) #make sure the move is valid on a piece level
 
+        virtual_board = board.grid.deep_dup
+        board.move_piece(virtual_board, start_pos, end_pos)
+
+        #getting all the moves of opposing player
+        waiting_player.get_all_moves
+        #we want to check the pos of our king to see if it's in one of those moves.
+
       rescue RuntimeError => e
         puts "#{e.message}"
         retry
       end
 
-      board.move_piece(start_pos, end_pos) #actual updating of board's grid array
+      board.move_piece(board.grid, start_pos, end_pos) #actual updating of board's grid array
 
       i = i == 0 ? 1 : 0 #switch turns
       @turn += 1

@@ -1,3 +1,16 @@
+#Used to create virtual boards
+class Array
+  def deep_dup
+    [].tap do |new_array|
+         self.each do |el|
+           new_array << (el.is_a?(Array) ? el.deep_dup : el)
+         end
+       end
+     end
+
+
+end
+
 class Board
   attr_accessor :game, :grid
 
@@ -64,20 +77,44 @@ class Board
   end
 
   #updates values of the grid array
-  def move_piece(start, finish)
-    piece = grid[start[1]][start[0]]
-    self[start] = nil #start position is now empty
+  #works on both the actual grid and virtual grids
+  def move_piece(candidate_grid, start, finish)
 
-    piece.position = finish #update position attribute of piece
+    piece = candidate_grid[start[1]][start[0]]
+    #store the piece's position attribute
+    original_position = piece.position
 
-    remove_captured_piece(self[finish]) if self.occupied?(finish)
+    candidate_grid[start[1]][start[0]] = nil #start position is now empty
 
-    self[finish] = piece #finish position now contains the new piece
+    #update position attribute of piece
+    #for both virtual and actual grids
+    piece.position = finish
+
+    #only remove the captured piece if we're working on the actual grid
+    remove_captured_piece(self[finish]) if self.occupied?(finish) && !self.is_virtual?(candidate_grid)
+
+    candidate_grid[finish[1]][finish[0]] = piece #finish position now contains the new piece
+
+    # consider refactoring
+    #if move puts the current player in check, we need to revert the move
+    if self.is_virtual?(candidate_grid)
+      if game.players[piece.player-1].in_check?
+        piece.position = original_position
+        raise RuntimeError.new "Invalid move - Your king would be in check!"
+      else
+        piece.position = original_position
+      end
+    end
+
   end
 
   #delete piece from other player's pieces array
   def remove_captured_piece(piece)
     game.players[piece.player-1].pieces.delete(piece)
+  end
+
+  def is_virtual?(candidate)
+    candidate.object_id != grid.object_id
   end
 
 

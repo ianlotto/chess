@@ -22,6 +22,19 @@ class Player
     end
   end
 
+  def get_all_moves
+    all_moves = []
+    pieces.each do |piece|
+      all_moves += piece.moves
+    end
+
+    #p all_moves
+    all_moves
+  end
+
+  def in_check?
+
+  end
 
 
   private
