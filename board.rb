@@ -7,8 +7,6 @@ class Array
          end
        end
      end
-
-
 end
 
 class Board
@@ -23,10 +21,8 @@ class Board
     tile_color = :yellow
 
     render_col_letters
-
     (0..7).to_a.reverse.each do |row|
       render_row_numbers(row)
-
       grid[row].each_with_index do |tile, i|
 
         if tile #occupied?
@@ -61,8 +57,6 @@ class Board
     self[pos].is_a? Piece
   end
 
-  #will still return true if called on a position off the grid
-  #that should be OK
   def empty?(pos)
     self[pos].nil?
   end
@@ -79,39 +73,30 @@ class Board
   #updates values of the grid array
   #works on both the actual grid and virtual grids
   def move_piece(candidate_board, start, finish)
-
     piece = candidate_board[start]
-    #store the piece's position attribute
     original_position = piece.position
-
-    candidate_board[start] = nil #start position is now empty
-
-    #update position attribute of piece
-    #for both virtual and actual grids
+    candidate_board[start] = nil
     piece.position = finish
-
-    #only remove the captured piece if we're working on the actual grid
-    captured_piece = remove_captured_piece(candidate_board[finish]) if candidate_board.occupied?(finish)
-
+    captured_piece = candidate_board.occupied?(finish) ? remove_captured_piece(candidate_board[finish]) : nil
     candidate_board[finish] = piece #finish position now contains the new piece
 
-    # consider refactoring
-    #if move puts the current player in check, we need to revert the move
-    if self.is_virtual?(candidate_board)
-      if piece.player.in_check?(candidate_board, game.players[piece.player.num-2])
+    look_ahead(candidate_board, piece, captured_piece, original_position) if self.is_virtual?(candidate_board)
+  end
 
-        restore_captured_piece(captured_piece) if captured_piece
-        piece.position = original_position
-        raise RuntimeError.new "Invalid move - Your king would be in check!"
-      else
+  def look_ahead(candidate_board, piece, captured_piece, original_position)
+    #if move puts the current player in check we raise an error
+    #we also need to restore original piece position
+    #state & player pieces arrays at the end
+    if piece.player.in_check?(candidate_board, game.players[piece.player.num-2])
+      restore_captured_piece(captured_piece) if captured_piece
+      piece.position = original_position
+      raise RuntimeError.new "Invalid move - Your king would be in check!"
+    else
+      restore_captured_piece(captured_piece) if captured_piece
+      piece.position = original_position
 
-        piece.position = original_position
-        restore_captured_piece(captured_piece) if captured_piece
-
-        return true
-      end
+      true
     end
-
   end
 
   def dup_board
@@ -121,7 +106,6 @@ class Board
     virtual_board
   end
 
-  #delete piece from other player's pieces array
   #Think about moving this to Player class.
   def remove_captured_piece(piece)
     captured_piece = piece.player.pieces.delete(piece)
@@ -152,14 +136,12 @@ class Board
     puts ""
   end
 
-  #builds the container grid
   def generate_board
     self.grid = Array.new(8) { |row| Array.new(8) }
 
     place_pieces
   end
 
-  #places the pieces on the board from the players' pieces arrays
   def place_pieces
     game.players.each do |player|
       pos = player.num == 1 ? [0,0] : [0,7]

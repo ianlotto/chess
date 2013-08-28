@@ -23,13 +23,11 @@ class Player
   end
 
   def get_all_moves(board)
-
     all_moves = {}
     pieces.each do |piece|
       all_moves[piece.position] = piece.moves(board, piece.position)
     end
 
-    #p all_moves
     all_moves
   end
 
