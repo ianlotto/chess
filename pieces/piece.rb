@@ -10,4 +10,8 @@ class Piece
   def on_board?(move)
     move.all? { |coord| coord.between?(0,7) }
   end
+  
+  def enemy?(piece)
+    piece && (self.player != piece.player)
+  end
 end
