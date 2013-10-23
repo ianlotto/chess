@@ -7,5 +7,4 @@ class King < Royalty
     super(player)
     @symbol = "K"
   end
-
 end

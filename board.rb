@@ -74,26 +74,30 @@ class Board
   #works on both the actual grid and virtual grids
   def move_piece(candidate_board, start, finish)
     piece = candidate_board[start]
+    
     original_position = piece.position
+    
     candidate_board[start] = nil
+    
     piece.position = finish
+    
     captured_piece = candidate_board.occupied?(finish) ? remove_captured_piece(candidate_board[finish]) : nil
+    
     candidate_board[finish] = piece #finish position now contains the new piece
 
     look_ahead(candidate_board, piece, captured_piece, original_position) if self.is_virtual?(candidate_board)
   end
 
   def look_ahead(candidate_board, piece, captured_piece, original_position)
-    #if move puts the current player in check we raise an error
-    #we also need to restore original piece position
-    #state & player pieces arrays at the end
+    
     if piece.player.in_check?(candidate_board, game.players[piece.player.num-2])
-      restore_captured_piece(captured_piece) if captured_piece
-      piece.position = original_position
+      restore_captured_piece(captured_piece) if captured_piece 
+      piece.position = original_position 
+      
       raise RuntimeError.new "Invalid move - Your king would be in check!"
     else
       restore_captured_piece(captured_piece) if captured_piece
-      piece.position = original_position
+      piece.position = original_position #we also need to restore original piece position here
 
       true
     end
@@ -106,7 +110,6 @@ class Board
     virtual_board
   end
 
-  #Think about moving this to Player class.
   def remove_captured_piece(piece)
     captured_piece = piece.player.pieces.delete(piece)
     piece.player.captured_pieces << captured_piece

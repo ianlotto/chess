@@ -9,8 +9,6 @@ class Bishop < Piece
     @symbol = "B"
   end
 
-
-
   def moves(board, start_pos)
     moves = directions(board, start_pos, DIAGONALS)
 

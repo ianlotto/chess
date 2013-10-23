@@ -18,8 +18,8 @@ class ChessGame
   end
 
   def play
-    i = 0 #toggles between the players array
-
+    i = 0
+     
     loop do
       current_player = players[i]
       waiting_player = players[i-1]
@@ -33,16 +33,13 @@ class ChessGame
       end
 
       begin
-        #all of these methods will raise an error if the
-        #specified move is invalid for whatever reason
-
-        #get player's input, checks that it's on the board
+       
         start_pos, end_pos = current_player.get_move
-        #check board for existence of player's piece
+        
         board.valid_move?(start_pos, current_player)
 
         target_piece = board[start_pos]
-        #make sure the move is valid on a piece level
+        
         target_piece.valid_move?(board, start_pos, end_pos)
 
         virtual_board = board.dup_board
@@ -54,7 +51,6 @@ class ChessGame
         retry
       end
 
-      #Consider reassigning the board attribute instead of calling this again
       board.move_piece(board, start_pos, end_pos) #actual updating of board's grid array
 
       i = i == 0 ? 1 : 0
@@ -66,5 +62,4 @@ class ChessGame
 
 end
 
-c = ChessGame.new
-c.play
+ChessGame.new.play
